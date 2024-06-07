@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import isValidUrl from 'valid-url'; // Import valid-url library
 import './App.css';
 
 function App() {
   const [url, setUrl] = useState('');
   const [progress, setProgress] = useState(0);
-  const [isValidUrl, setIsValidUrl] = useState(true);
+  const [isValidUrlInput, setIsValidUrlInput] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleUrlChange = (e) => {
@@ -15,19 +16,13 @@ function App() {
   };
 
   const validateUrl = (url) => {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-    setIsValidUrl(!!pattern.test(url));
+    setIsValidUrlInput(isValidUrl.isUri(url)); // Check if URL is valid
   };
 
   const handleDownload = async () => {
     setErrorMessage('');
 
-    if (!isValidUrl) {
+    if (!isValidUrlInput) {
       setErrorMessage('Please enter a valid URL');
       console.error('Invalid URL entered');
       return;
@@ -35,7 +30,7 @@ function App() {
 
     try {
       const response = await axios({
-        url: '/download', // Change this to your actual backend endpoint
+        url: 'http://localhost:5000/download', // Change this to your actual backend endpoint
         method: 'POST',
         data: { url: url },
         onDownloadProgress: (progressEvent) => {
@@ -66,9 +61,9 @@ function App() {
           value={url} 
           onChange={handleUrlChange} 
           placeholder="Enter URL" 
-          className={`url-input ${isValidUrl ? '' : 'invalid'}`}
+          className={`url-input ${isValidUrlInput ? '' : 'invalid'}`}
         />
-        <button onClick={handleDownload} disabled={!isValidUrl}>Download</button>
+        <button onClick={handleDownload} disabled={!isValidUrlInput}>Download</button>
         {progress > 0 && <progress value={progress} max="100">{progress}%</progress>}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </header>
