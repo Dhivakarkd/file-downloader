@@ -1,0 +1,22 @@
+# Node.js dependencies
+/backend/node_modules/
+/frontend/node_modules/
+
+# Build files
+/backend/build/
+/frontend/build/
+/frontend/dist/
+
+# Environment variables
+/backend/.env
+
+# Docker files
+/backend/Dockerfile
+/frontend/Dockerfile
+
+# macOS system files
+.DS_Store
+
+# Editor files
+.vscode/
+*.sublime-workspace
