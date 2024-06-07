@@ -7,6 +7,8 @@
 /frontend/build/
 /frontend/dist/
 
+/backend/downloads/
+
 # Environment variables
 /backend/.env
 
